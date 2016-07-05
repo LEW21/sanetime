@@ -17,8 +17,8 @@ setup(
     description='A sane date/time python interface:  better epoch time, timezones, and deltas -- django support as well',
     long_description=open('README.markdown').read(),
     install_requires=[
-        'pytz>=2010',
-        'python-dateutil>=1.5,<2.0',  # we're not compatible with python 3.0 yet
+        'pytz',
+        'python-dateutil',
         'unittest2'
     ],
     classifiers=[
@@ -33,10 +33,7 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.5',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: Implementation :: PyPy',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Database',
         'Topic :: Internet',
         'Topic :: Internet :: WWW/HTTP',

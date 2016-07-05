@@ -20,7 +20,7 @@ class SaneTzTimeTest(unittest.TestCase):
     def setUp(self): pass
 
     def test_clone(self):
-        self.assertEquals(tztime, type(tztime(JAN_MICROS,TZ_UTC).clone()))
+        self.assertEqual(tztime, type(tztime(JAN_MICROS,TZ_UTC).clone()))
 
     def test_equality(self):
         t1 = tztime(JAN_MICROS, tz='UTC')
@@ -54,57 +54,12 @@ class SaneTzTimeTest(unittest.TestCase):
 
         self.assertTrue(t1==t1.us)
 
-    def test_comparisons(self):
-        t1 = tztime(JAN_MICROS,'UTC')
-        t2 = tztime(JAN_MICROS,'America/New_York')
-        t3 = tztime(JAN_MICROS+1,'UTC')
-
-        self.assertFalse(t1 > t1)
-        self.assertFalse(t2 > t2)
-        self.assertFalse(t3 > t3)
-        self.assertTrue(t1 > t2)
-        self.assertFalse(t2 > t1)
-        self.assertFalse(t1 > t3)
-        self.assertTrue(t3 > t1)
-        self.assertFalse(t2 > t3)
-        self.assertTrue(t3 > t2)
-
-        self.assertTrue(t1 >= t1)
-        self.assertTrue(t2 >= t2)
-        self.assertTrue(t3 >= t3)
-        self.assertTrue(t1 >= t2)
-        self.assertFalse(t2 >= t1)
-        self.assertFalse(t1 >= t3)
-        self.assertTrue(t3 >= t1)
-        self.assertFalse(t2 >= t3)
-        self.assertTrue(t3 >= t2)
-
-        self.assertTrue(t1 <= t1)
-        self.assertTrue(t2 <= t2)
-        self.assertTrue(t3 <= t3)
-        self.assertFalse(t1 <= t2)
-        self.assertTrue(t2 <= t1)
-        self.assertTrue(t1 <= t3)
-        self.assertFalse(t3 <= t1)
-        self.assertTrue(t2 <= t3)
-        self.assertFalse(t3 <= t2)
-
-        self.assertFalse(t1 < t1)
-        self.assertFalse(t2 < t2)
-        self.assertFalse(t3 < t3)
-        self.assertFalse(t1 < t2)
-        self.assertTrue(t2 < t1)
-        self.assertTrue(t1 < t3)
-        self.assertFalse(t3 < t1)
-        self.assertTrue(t2 < t3)
-        self.assertFalse(t3 < t2)
-
     def test_hashability(self):
         t1 = tztime(JAN_MICROS, tz='UTC')
         t2 = tztime(JAN_MICROS, tz='America/New_York')
         t3 = tztime(JAN_MICROS+1)
         s = set([t1,t2,t3])
-        self.assertEquals(3, len(s))
+        self.assertEqual(3, len(s))
         self.assertIn(t1, s)
         self.assertIn(t2, s)
         self.assertIn(t3, s)

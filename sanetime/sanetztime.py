@@ -1,4 +1,4 @@
-from sanetime import SaneTime
+from .sanetime import SaneTime
 
 """
 Sane wrappers around the python's datetime / time / date / timetuple / pytz / timezone / calendar /
@@ -25,11 +25,13 @@ class SaneTzTime(SaneTime):
     In most other respects sanetztime is just like sanetime.
     """
 
-    def __cmp__(self, other): 
+    def __eq__(self, other):
         if not hasattr(other, '_tuple'): other = SaneTzTime(other)
-        return cmp(self._tuple, other._tuple)
+        return self._tuple == other._tuple
+    def __lt__(self, other): 
+        raise TypeError
     def __hash__(self): return self._tuple.__hash__()
-    def __repr__(self): return u"SaneTzTime(%s,%s)" % (self.us,repr(self.tz))
+    def __repr__(self): return "SaneTzTime(%s,%s)" % (self.us,repr(self.tz))
 
     @property
     def time(self): return SaneTime(self.us,self.tz)

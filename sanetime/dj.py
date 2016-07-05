@@ -1,4 +1,4 @@
-from sanetime import time,SaneTime
+from .sanetime import time,SaneTime
 try:
     from django.db import models
     from django import forms
@@ -8,11 +8,9 @@ except ImportError:
 class SaneTimeFormField(forms.DateTimeField):
     pass
 
-class SaneTimeField(models.BigIntegerField):
+class SaneTimeField(models.BigIntegerField, metaclass=models.SubfieldBase):
 
     description = "A field to hold sanetimes (i.e. microseconds since epoch)."
-
-    __metaclass__ = models.SubfieldBase
 
     def __init__(self, verbose_name=None, name=None, auto_now=False, auto_now_add=False, **kwargs):
         self.auto_now, self.auto_now_add = auto_now, auto_now_add

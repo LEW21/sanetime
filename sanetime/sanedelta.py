@@ -1,4 +1,5 @@
 from .constants import MILLI_MICROS,SECOND_MICROS,MINUTE_MICROS,HOUR_MICROS,MEAN_DAY_MICROS,MEAN_WEEK_MICROS,MEAN_MONTH_MICROS,MEAN_YEAR_MICROS,HALF_MILLI_MICROS,HALF_SECOND_MICROS,HALF_MINUTE_MICROS,HALF_HOUR_MICROS,HALF_MEAN_DAY_MICROS,HALF_MEAN_WEEK_MICROS,HALF_MEAN_MONTH_MICROS,HALF_MEAN_YEAR_MICROS
+from functools import total_ordering
 import time
 
 TRANSLATIONS = (
@@ -13,32 +14,33 @@ TRANSLATIONS = (
         (('us','micros','microseconds'),1) )
 TRANSLATION_HASH = dict((alt,v) for k,v in TRANSLATIONS for alt in k)
 
+@total_ordering
 class SaneDelta(object):
     def __init__(self, *args, **kwargs):
         if args:
             self.us = int(args[0])
         else:
-            self.us = sum(TRANSLATION_HASH[k]*(v or 0) for k,v in kwargs.iteritems())
+            self.us = sum(TRANSLATION_HASH[k]*(v or 0) for k,v in kwargs.items())
 
     # rounded amounts
     @property
     def rounded_microseconds(self): return self.us
     @property
-    def rounded_milliseconds(self): return (self.us + HALF_MILLI_MICROS) / MILLI_MICROS
+    def rounded_milliseconds(self): return (self.us + HALF_MILLI_MICROS) // MILLI_MICROS
     @property
-    def rounded_seconds(self): return (self.us + HALF_SECOND_MICROS) / SECOND_MICROS
+    def rounded_seconds(self): return (self.us + HALF_SECOND_MICROS) // SECOND_MICROS
     @property
-    def rounded_minutes(self): return (self.us + HALF_MINUTE_MICROS) / MINUTE_MICROS
+    def rounded_minutes(self): return (self.us + HALF_MINUTE_MICROS) // MINUTE_MICROS
     @property
-    def rounded_hours(self): return (self.us + HALF_HOUR_MICROS) / HOUR_MICROS
+    def rounded_hours(self): return (self.us + HALF_HOUR_MICROS) // HOUR_MICROS
     @property
-    def rounded_mean_days(self): return (self.us + HALF_MEAN_DAY_MICROS) / MEAN_DAY_MICROS
+    def rounded_mean_days(self): return (self.us + HALF_MEAN_DAY_MICROS) // MEAN_DAY_MICROS
     @property
-    def rounded_mean_weeks(self): return (self.us + HALF_MEAN_WEEK_MICROS) / MEAN_WEEK_MICROS
+    def rounded_mean_weeks(self): return (self.us + HALF_MEAN_WEEK_MICROS) // MEAN_WEEK_MICROS
     @property
-    def rounded_mean_months(self): return (self.us + HALF_MEAN_MONTH_MICROS) / MEAN_MONTH_MICROS
+    def rounded_mean_months(self): return (self.us + HALF_MEAN_MONTH_MICROS) // MEAN_MONTH_MICROS
     @property
-    def rounded_mean_years(self): return (self.us + HALF_MEAN_YEAR_MICROS) / MEAN_YEAR_MICROS
+    def rounded_mean_years(self): return (self.us + HALF_MEAN_YEAR_MICROS) // MEAN_YEAR_MICROS
 
     # aliases
     rus = rounded_micros = rounded_microseconds
@@ -66,21 +68,21 @@ class SaneDelta(object):
     @property
     def whole_microseconds(self): return self.us
     @property
-    def whole_milliseconds(self): return self.us / MILLI_MICROS
+    def whole_milliseconds(self): return self.us // MILLI_MICROS
     @property
-    def whole_seconds(self): return self.us / SECOND_MICROS
+    def whole_seconds(self): return self.us // SECOND_MICROS
     @property
-    def whole_minutes(self): return self.us / MINUTE_MICROS
+    def whole_minutes(self): return self.us // MINUTE_MICROS
     @property
-    def whole_hours(self): return self.us / HOUR_MICROS
+    def whole_hours(self): return self.us // HOUR_MICROS
     @property
-    def whole_mean_days(self): return self.us / MEAN_DAY_MICROS
+    def whole_mean_days(self): return self.us // MEAN_DAY_MICROS
     @property
-    def whole_mean_weeks(self): return self.us / MEAN_WEEK_MICROS
+    def whole_mean_weeks(self): return self.us // MEAN_WEEK_MICROS
     @property
-    def whole_mean_months(self): return self.us / MEAN_MONTH_MICROS
+    def whole_mean_months(self): return self.us // MEAN_MONTH_MICROS
     @property
-    def whole_mean_years(self): return self.us / MEAN_YEAR_MICROS
+    def whole_mean_years(self): return self.us // MEAN_YEAR_MICROS
 
     # aliases
     wus = whole_micros = whole_microseconds
@@ -128,13 +130,13 @@ class SaneDelta(object):
     @property
     def positional_microseconds(self): return self.us % SECOND_MICROS
     @property
-    def positional_milliseconds(self): return self.us % SECOND_MICROS / MILLI_MICROS
+    def positional_milliseconds(self): return self.us % SECOND_MICROS // MILLI_MICROS
     @property
-    def positional_seconds(self): return self.us % MINUTE_MICROS / SECOND_MICROS
+    def positional_seconds(self): return self.us % MINUTE_MICROS // SECOND_MICROS
     @property
-    def positional_minutes(self): return self.us % HOUR_MICROS / MINUTE_MICROS
+    def positional_minutes(self): return self.us % HOUR_MICROS // MINUTE_MICROS
     @property
-    def positional_hours(self): return self.us % MEAN_DAY_MICROS / HOUR_MICROS
+    def positional_hours(self): return self.us % MEAN_DAY_MICROS // HOUR_MICROS
 
     #aliases
     pus = positional_micros = positional_microseconds
@@ -147,13 +149,13 @@ class SaneDelta(object):
     @property
     def positional_rounded_microseconds(self): return self.us % SECOND_MICROS
     @property
-    def positional_rounded_milliseconds(self): return (self.us % SECOND_MICROS + HALF_MILLI_MICROS) / MILLI_MICROS
+    def positional_rounded_milliseconds(self): return (self.us % SECOND_MICROS + HALF_MILLI_MICROS) // MILLI_MICROS
     @property
-    def positional_rounded_seconds(self): return (self.us % MINUTE_MICROS + HALF_SECOND_MICROS) / SECOND_MICROS
+    def positional_rounded_seconds(self): return (self.us % MINUTE_MICROS + HALF_SECOND_MICROS) // SECOND_MICROS
     @property
-    def positional_rounded_minutes(self): return (self.us % HOUR_MICROS + HALF_MINUTE_MICROS) / MINUTE_MICROS
+    def positional_rounded_minutes(self): return (self.us % HOUR_MICROS + HALF_MINUTE_MICROS) // MINUTE_MICROS
     @property
-    def positional_rounded_hours(self): return (self.us % MEAN_DAY_MICROS + HALF_HOUR_MICROS) / HOUR_MICROS
+    def positional_rounded_hours(self): return (self.us % MEAN_DAY_MICROS + HALF_HOUR_MICROS) // HOUR_MICROS
 
     #aliases
     prus = positional_rounded_micros = positional_rounded_microseconds
@@ -164,26 +166,25 @@ class SaneDelta(object):
 
     def clone(self): return SaneDelta(self.us)
 
-    def __cmp__(self, other): return cmp(self.us, int(other))
+    def __eq__(self, other): return self.us == int(other)
+    def __lt__(self, other): return self.us < int(other)
     def __hash__(self): return hash(self.us)
 
-    def __int__(self): return self.us
-    def __long__(self): return long(self.us)
+    def __int__(self): return int(self.us)
 
     def __add__(self, operand): return SaneDelta(self.us + int(operand))
     def __sub__(self, operand): return SaneDelta(self.us - int(operand))
     def __mul__(self, operand): return SaneDelta(self.us * int(operand))
-    def __div__(self, operand): return SaneDelta(self.us / int(operand))
+    def __truediv__(self, operand): return SaneDelta(self.us / int(operand))
     def __rmul__(self, operand): return int(operand) * self.us
-    def __rdiv__(self, operand): return int(operand) / self.us
+    def __rtruediv__(self, operand): return int(operand) / self.us
 
     def __neg__(self): return SaneDelta(-self.us)
     def __pos__(self): return SaneDelta(+self.us)
     def __abs__(self): return SaneDelta(abs(self.us))
 
     def __repr__(self): return 'SaneDelta(%s)'%self.us
-    def __str__(self): return unicode(self).encode('utf-8')
-    def __unicode__(self): return self.construct_str()
+    def __str__(self): return self.construct_str()
 
 
     @property

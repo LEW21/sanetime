@@ -6,7 +6,7 @@ from dateutil.tz import tzlocal
 from .error import TimeConstructionError
 from .sanedelta import SaneDelta
 import pytz
-
+from functools import total_ordering
 
 #TODO: ensure that this is immutable, and that addiiton,etc always producesa  new object!!!
  
@@ -17,6 +17,7 @@ MICROS_TRANSLATIONS = (
         (('us','micros','microseconds','epoch_micros','epoch_microseconds'),1) )
 MICROS_TRANSLATION_HASH = dict((alt,v) for k,v in MICROS_TRANSLATIONS for alt in k)
 
+@total_ordering
 class SaneTime(object):
     """
     A time stored in epoch microseconds, and optionally decorated with a timezone.
@@ -66,7 +67,7 @@ class SaneTime(object):
         naive_dt = None
         avoid_localize = False
 
-        for k,v in kwargs.iteritems():
+        for k,v in kwargs.items():
             if k in ('tz','timezone'):
                 tzs.add(SaneTime.to_timezone(v))
             elif k in MICROS_TRANSLATION_HASH:
@@ -85,7 +86,7 @@ class SaneTime(object):
             if hasattr(arg,'__int__'):
                 uss.add(int(arg))
                 if hasattr(arg,'tz'): tzs.add(arg.tz)
-            elif isinstance(arg, basestring):
+            elif isinstance(arg, str):
                 parts = arg.strip().split(' ')
                 if len(parts)>1 and parts[-1].startswith('+'):
                     try:
@@ -165,9 +166,12 @@ class SaneTime(object):
 
     def strftime(self, *args, **kwargs): return self.datetime.strftime(*args, **kwargs)
 
-    def __cmp__(self, other): 
+    def __eq__(self, other):
         if not hasattr(other, '__int__'): other = SaneTime(other)
-        return cmp(self.us, int(other))
+        return self.us == int(other)
+    def __lt__(self, other): 
+        if not hasattr(other, '__int__'): other = SaneTime(other)
+        return self.us < int(other)
     def __hash__(self): return self.us.__hash__()
 
     def __add__(self, operand): 
@@ -179,19 +183,17 @@ class SaneTime(object):
         return self.__add__(-int(operand))
     def __mul__(self, operand):
         return self.us * int(operand)
-    def __div__(self, operand):
+    def __truediv__(self, operand):
         return self.us / int(operand)
     
     def __int__(self): return int(self.us)
-    def __long__(self): return long(self.us)
 
-    def __repr__(self): return u"SaneTime(%s,%s)" % (self.us,repr(self.tz))
-    def __str__(self): return unicode(self).encode('utf-8')
-    def __unicode__(self): 
+    def __repr__(self): return "SaneTime(%s,%s)" % (self.us,repr(self.tz))
+    def __str__(self): 
         dt = self.datetime
-        micros = u".%06d"%dt.microsecond if dt.microsecond else ''
-        time = u" %02d:%02d:%02d%s"%(dt.hour,dt.minute,dt.second,micros) if dt.microsecond or dt.second or dt.minute or dt.hour else ''
-        return u"%04d-%02d-%02d%s +%s" % (dt.year, dt.month, dt.day, time, dt.tzinfo.zone)
+        micros = ".%06d"%dt.microsecond if dt.microsecond else ''
+        time = " %02d:%02d:%02d%s"%(dt.hour,dt.minute,dt.second,micros) if dt.microsecond or dt.second or dt.minute or dt.hour else ''
+        return "%04d-%02d-%02d%s +%s" % (dt.year, dt.month, dt.day, time, dt.tzinfo.zone)
 
     def clone(self): 
         """ cloning stuff """
@@ -267,7 +269,7 @@ class SaneTime(object):
 
     @classmethod
     def to_timezone(kls, tz):
-        if not isinstance(tz, basestring): return tz
+        if not isinstance(tz, str): return tz
         return pytz.timezone(tz)
 
 
@@ -276,7 +278,7 @@ def ntime(*args, **kwargs):
     if args:
         if args[0] is None: return None
     elif kwargs:
-        if None in [v for k,v in kwargs.iteritems() if k!='tz']: return None
+        if None in [v for k,v in kwargs.items() if k!='tz']: return None
     return SaneTime(*args, **kwargs)
 
 #primary aliases
